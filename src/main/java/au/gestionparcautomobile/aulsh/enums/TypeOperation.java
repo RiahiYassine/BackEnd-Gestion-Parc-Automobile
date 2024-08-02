@@ -4,5 +4,6 @@ public enum TypeOperation {
     ASSURANCE,
     MAINTENANCE,
     REPARATION,
-    VISITE_TECHNIQUE
+    VISITE_TECHNIQUE,
+    CARBURANT
 }

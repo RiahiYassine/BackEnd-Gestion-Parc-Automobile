@@ -542,4 +542,52 @@ public class OperationServiceImpl implements IOperationService{
     }
 
 
+
+    @Override
+    public List<Operation> filterCarburants(CarburantFilter filter) {
+        List<Operation> allOperations = operationRepository.findAllByTypeOperationWithEagerLoading(TypeOperation.CARBURANT);
+
+        List<Operation> filteredOperations = allOperations.stream().filter(operation -> {
+            boolean matches = true;
+
+            //immatriculation
+            if (filter.immatriculation() != null && !filter.immatriculation().isEmpty()) {
+                matches = filter.immatriculation().equalsIgnoreCase(operation.getVehicule().getVehiculeSpecif().getImmatriculation());
+            }
+
+            //typeImmatriculation
+            if (filter.typeImmatriculation() != null && !filter.typeImmatriculation().isEmpty()) {
+                matches = matches && filter.typeImmatriculation().equalsIgnoreCase(String.valueOf(operation.getVehicule().getVehiculeSpecif().getTypeImmatriculation()));
+            }
+
+            //marque
+            if (filter.marque() != null && !filter.marque().isEmpty()) {
+                matches = matches && filter.marque().equalsIgnoreCase(operation.getVehicule().getVehiculeSpecif().getModele().getMarque().getNomMarque());
+            }
+
+            //modele
+            if (filter.modele() != null && !filter.modele().isEmpty()) {
+                matches = matches && filter.modele().equalsIgnoreCase(operation.getVehicule().getVehiculeSpecif().getModele().getNomModele());
+            }
+
+            //typeCarburant
+            if (filter.typeCarburant() != null && !filter.typeCarburant().isEmpty()) {
+                matches = matches && filter.typeCarburant().equalsIgnoreCase(String.valueOf(operation.getVehicule().getVehiculeSpecif().getTypeCarburant()));
+            }
+
+            //centre
+            if (filter.centre() != null && !filter.centre().isEmpty()) {
+                matches = matches && filter.centre().equalsIgnoreCase(String.valueOf(operation.getNomCentre()));
+            }
+
+            return matches;
+        }).collect(Collectors.toList());
+
+        if (filteredOperations.isEmpty()) {
+            throw new AssuranceNotFoundException("Aucune reparation was found with this filtering.");
+        }
+        return filteredOperations;
+    }
+
+
 }

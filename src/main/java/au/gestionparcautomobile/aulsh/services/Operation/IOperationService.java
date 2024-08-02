@@ -50,4 +50,7 @@ public interface IOperationService {
 
     public List<Map<String, Object>> getCostsByYear(int year);
 
+
+    List<Operation> filterCarburants(CarburantFilter filter);
+
 }

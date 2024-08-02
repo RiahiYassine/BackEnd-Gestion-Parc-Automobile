@@ -207,4 +207,17 @@ public class OperationController {
     public List<Map<String, Object>> getCostsByYear(@PathVariable int year) {
         return iOperationService.getCostsByYear(year);
     }
+
+
+
+
+    @PostMapping("/carburants/filter")
+    public ResponseEntity<?> filterCarburants(@RequestBody CarburantFilter filter) {
+        try {
+            List<Operation> carburants = iOperationService.filterCarburants(filter);
+            return new ResponseEntity<>(carburants, HttpStatus.OK);
+        } catch (AssuranceNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 }
