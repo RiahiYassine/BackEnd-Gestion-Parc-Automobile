@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -22,7 +23,7 @@ public class Affectation {
     @Column(insertable = false, updatable = false)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "mission_id")
     @JsonIgnore
     private Mission mission;
@@ -36,6 +37,14 @@ public class Affectation {
     private Status status;
 
     private LocalDate dateReaction;
+
+
+    @Positive(message = "Le kilométrage doit être positif.")
+    private Long kilometrageInitial;
+
+
+    @Positive(message = "Le kilométrage doit être positif.")
+    private Long kilometrageRetour;
 
     private String motif;
 

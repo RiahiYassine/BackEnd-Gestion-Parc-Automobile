@@ -56,7 +56,7 @@ public class VehiculeSpecif {
     @NotNull(message = "Le kilométrage est requis.")
     @Positive(message = "Le kilométrage doit être positif.")
     @Column(nullable = false)
-    private int kilometrage;
+    private Long kilometrage;
 
     @NotNull(message = "Le modèle est requis.")
     @ManyToOne(fetch = FetchType.EAGER)

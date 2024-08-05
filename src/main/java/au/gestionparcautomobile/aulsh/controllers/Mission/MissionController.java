@@ -7,13 +7,17 @@ import au.gestionparcautomobile.aulsh.records.MissionFilter;
 import au.gestionparcautomobile.aulsh.records.MissionRequest;
 import au.gestionparcautomobile.aulsh.records.VehiculeFilter;
 import au.gestionparcautomobile.aulsh.services.Mission.IMissionService;
+import au.gestionparcautomobile.aulsh.services.pdfGenerator.IPdfGeneratorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +25,8 @@ import java.util.List;
 public class MissionController {
 
     private final IMissionService iMissionService;
+    private final IPdfGeneratorService iPdfGeneratorService;
+
 
     @PostMapping
     public ResponseEntity<Mission> createMission(@RequestBody @Valid MissionRequest missionRequest) {
@@ -130,6 +136,22 @@ public class MissionController {
     public ResponseEntity<List<Mission>> getAllMissionsRefuser() {
         List<Mission> missions = iMissionService.getAllMissionsRefuser();
         return ResponseEntity.ok(missions);
+    }
+
+
+    @GetMapping("/test/{id}")
+    public ResponseEntity<Map<String, Object>> testPdf(@PathVariable Long id){
+
+
+        Mission mission = iMissionService.getMissionById(id);
+
+        byte[] pdfContent = iPdfGeneratorService.generateMissionPdf(mission);
+
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("pdf", Base64.getEncoder().encodeToString(pdfContent));  // Encode PDF as Base64 string
+
+        return ResponseEntity.ok(response);
     }
 
 }

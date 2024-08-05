@@ -44,9 +44,28 @@ public class AffectationServiceImpl implements IAffectationService{
         affectation.setMotif(motif);
         affectation.setStatus(Status.ACCEPTE);  // or any other appropriate status
         affectation.setDateReaction(LocalDate.now());
+        affectation.setKilometrageInitial(vehicule.getVehiculeSpecif().getKilometrage());
+
+        Affectation updatedAffectation = affectationRepository.save(affectation);
+
+        return updatedAffectation;
+    }
+
+    @Override
+    public Affectation updateKilometrage(Long id, Long kilometrageInitial, Long kilometrageRetour) {
+        Affectation affectation = affectationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Affectation not found with id " + id));
+
+        Vehicule vehicule = vehiculeRepository.findById(affectation.getVehicule().getId())
+                .orElseThrow(() -> new RuntimeException("Vehicule not found with id " + affectation.getVehicule().getId()));
+
+
+        vehicule.getVehiculeSpecif().setKilometrage(kilometrageRetour);
+        vehiculeRepository.save(vehicule); // Save the updated vehicule entity
+        affectation.setKilometrageRetour(kilometrageRetour);
+
 
         return affectationRepository.save(affectation);
     }
-
 
 }
