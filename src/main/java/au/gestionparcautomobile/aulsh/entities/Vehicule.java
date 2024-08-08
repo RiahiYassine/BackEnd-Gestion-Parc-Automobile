@@ -44,4 +44,9 @@ public class Vehicule {
     @OneToMany(mappedBy = "vehicule", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Affectation> affectations;
+
+
+    @OneToMany(mappedBy = "vehicule", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Alerte> alertes;
 }

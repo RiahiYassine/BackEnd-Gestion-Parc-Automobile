@@ -19,4 +19,6 @@
         List<Vehicule> filterVehicules(VehiculeFilter filter);
 
         List<Vehicule> findAvailableVehicles(LocalDate startDate, LocalDate endDate);
+
+
     }

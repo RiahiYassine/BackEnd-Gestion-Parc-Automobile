@@ -1,14 +1,18 @@
 package au.gestionparcautomobile.aulsh.services.Operation;
 
+import au.gestionparcautomobile.aulsh.entities.Alerte;
 import au.gestionparcautomobile.aulsh.entities.Operation;
+import au.gestionparcautomobile.aulsh.entities.TypeAlerte;
 import au.gestionparcautomobile.aulsh.entities.Vehicule;
 import au.gestionparcautomobile.aulsh.enums.CategorieMaintenance;
 import au.gestionparcautomobile.aulsh.enums.OperationRequest;
+import au.gestionparcautomobile.aulsh.enums.SeverityLevel;
 import au.gestionparcautomobile.aulsh.enums.TypeOperation;
 import au.gestionparcautomobile.aulsh.exceptions.AssuranceNotFoundException;
 import au.gestionparcautomobile.aulsh.records.*;
 import au.gestionparcautomobile.aulsh.repositories.OperationRepository;
 import au.gestionparcautomobile.aulsh.repositories.VehiculeRepository;
+import au.gestionparcautomobile.aulsh.services.Alerte.IAlerteService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
@@ -27,6 +31,7 @@ public class OperationServiceImpl implements IOperationService{
 
     private final VehiculeRepository vehiculeRepository;
     private final OperationRepository operationRepository;
+    private final IAlerteService iAlerteService;
 
     @Override
     public Operation createOperation(OperationRequest operationRequest) throws IOException {
@@ -54,6 +59,22 @@ public class OperationServiceImpl implements IOperationService{
         }
 
         Operation operation = operationBuilder.build();
+
+        if(operation.getTypeOperation()!=TypeOperation.CARBURANT){
+            Alerte alerte = Alerte.builder()
+                    .dateReminder(operation.getDateFinValidite())
+                    .message("operation alerte")
+                    .severity(SeverityLevel.HIGH)
+                    .typeAlerte(TypeAlerte.builder()
+                            .name(String.valueOf(operation.getTypeOperation()))
+                            .build())
+                    .vehicule(Vehicule.builder()
+                            .id(operation.getVehicule().getId())
+                            .build())
+                    .build();
+
+            iAlerteService.createAlerte(alerte);
+        }
 
         return operationRepository.save(operation);
     }
