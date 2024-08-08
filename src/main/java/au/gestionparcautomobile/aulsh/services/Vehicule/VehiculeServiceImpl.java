@@ -85,7 +85,8 @@ public class VehiculeServiceImpl implements IVehiculeService {
         iVehiculeSpecifService.updateVehiculeSpecif(existingVehicule.getVehiculeSpecif().getId(),vehiculeRequest.vehiculeSpecif());
         existingVehicule.setDateEntree(vehiculeRequest.vehicule().getDateEntree());
         existingVehicule.setStatusVehicule(vehiculeRequest.vehicule().getStatusVehicule());
-
+        existingVehicule.setCategorieVehicule(vehiculeRequest.vehicule().getCategorieVehicule());
+        existingVehicule.setTypeTransmission(vehiculeRequest.vehicule().getTypeTransmission());
 
         Vehicule updatedVehicule = vehiculeRepository.save(existingVehicule);
 
@@ -149,6 +150,14 @@ public class VehiculeServiceImpl implements IVehiculeService {
 
             if (filter.statusVehicule() != null && !filter.statusVehicule().isEmpty()) {
                 matches = matches && filter.statusVehicule().equalsIgnoreCase(String.valueOf(vehicule.getStatusVehicule()));
+            }
+
+            if (filter.categorieVehicule() != null && !filter.categorieVehicule().isEmpty()) {
+                matches = matches && filter.categorieVehicule().equalsIgnoreCase(String.valueOf(vehicule.getCategorieVehicule()));
+            }
+
+            if (filter.typeTransmission() != null && !filter.typeTransmission().isEmpty()) {
+                matches = matches && filter.typeTransmission().equalsIgnoreCase(String.valueOf(vehicule.getTypeTransmission()));
             }
 
             return matches;

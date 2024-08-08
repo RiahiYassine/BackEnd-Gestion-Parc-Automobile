@@ -1,6 +1,8 @@
 package au.gestionparcautomobile.aulsh.entities;
 
+import au.gestionparcautomobile.aulsh.enums.CategorieVehicule;
 import au.gestionparcautomobile.aulsh.enums.StatusVehicule;
+import au.gestionparcautomobile.aulsh.enums.TypeTransmission;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -33,6 +35,17 @@ public class Vehicule {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatusVehicule statusVehicule;
+
+    @NotNull(message = "Categorie est requis.")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CategorieVehicule categorieVehicule;
+
+
+    @NotNull(message = "Type de Transmission est requis.")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TypeTransmission typeTransmission;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "vehicule_specif_id")
