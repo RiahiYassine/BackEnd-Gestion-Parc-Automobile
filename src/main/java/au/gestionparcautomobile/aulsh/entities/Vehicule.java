@@ -1,5 +1,6 @@
 package au.gestionparcautomobile.aulsh.entities;
 
+import au.gestionparcautomobile.aulsh.enums.StatusVehicule;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -29,9 +30,9 @@ public class Vehicule {
     @Column(nullable = false)
     private LocalDate dateEntree;
 
-    @NotNull(message = "La disponibilité est obligatoire")
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private boolean disponibilite;
+    private StatusVehicule statusVehicule;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "vehicule_specif_id")

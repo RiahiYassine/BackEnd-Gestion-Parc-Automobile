@@ -7,7 +7,7 @@ public record VehiculeFilter(
         String marque,
         String modele,
         String typeCarburant,
-        Boolean disponibilite
+        String statusVehicule
 
 ) {
 }

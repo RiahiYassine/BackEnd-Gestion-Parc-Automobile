@@ -4,6 +4,7 @@ import au.gestionparcautomobile.aulsh.entities.Marque;
 import au.gestionparcautomobile.aulsh.entities.Modele;
 import au.gestionparcautomobile.aulsh.entities.Vehicule;
 import au.gestionparcautomobile.aulsh.entities.VehiculeSpecif;
+import au.gestionparcautomobile.aulsh.enums.StatusVehicule;
 import au.gestionparcautomobile.aulsh.exceptions.NoVehiculesFoundException;
 import au.gestionparcautomobile.aulsh.records.VehiculeFilter;
 import au.gestionparcautomobile.aulsh.records.VehiculeRequest;
@@ -42,6 +43,7 @@ public class VehiculeServiceImpl implements IVehiculeService {
         vehiculeSpecif = vehiculeSpecifRepository.save(vehiculeSpecif);
         // Save the Vehicule
         Vehicule vehicule = vehiculeRequest.vehicule();
+        vehicule.setStatusVehicule(StatusVehicule.EN_PARC);
         vehicule.setVehiculeSpecif(vehiculeSpecif);
         return vehiculeRepository.save(vehicule);
 
@@ -82,7 +84,7 @@ public class VehiculeServiceImpl implements IVehiculeService {
         Vehicule existingVehicule = vehiculeRepository.findByIdWithEagerLoading(id).orElseThrow(() -> new IllegalArgumentException("Vehicule not found with id: " + id));
         iVehiculeSpecifService.updateVehiculeSpecif(existingVehicule.getVehiculeSpecif().getId(),vehiculeRequest.vehiculeSpecif());
         existingVehicule.setDateEntree(vehiculeRequest.vehicule().getDateEntree());
-        existingVehicule.setDisponibilite(vehiculeRequest.vehicule().isDisponibilite());
+        existingVehicule.setStatusVehicule(vehiculeRequest.vehicule().getStatusVehicule());
 
 
         Vehicule updatedVehicule = vehiculeRepository.save(existingVehicule);
@@ -145,8 +147,8 @@ public class VehiculeServiceImpl implements IVehiculeService {
                 matches = matches && filter.typeCarburant().equalsIgnoreCase(String.valueOf(vehicule.getVehiculeSpecif().getTypeCarburant()));
             }
 
-            if (filter.disponibilite() != null && !filter.typeCarburant().isEmpty()) {
-                matches = matches && filter.disponibilite() == vehicule.isDisponibilite();
+            if (filter.statusVehicule() != null && !filter.statusVehicule().isEmpty()) {
+                matches = matches && filter.statusVehicule().equalsIgnoreCase(String.valueOf(vehicule.getStatusVehicule()));
             }
 
             return matches;
