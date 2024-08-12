@@ -41,6 +41,7 @@ public class Employe extends User {
                     CascadeType.PERSIST,
                     CascadeType.MERGE
             },
+
             mappedBy = "accompagnants")
     @JsonIgnore
     private List<Mission> missionsAccompagne;

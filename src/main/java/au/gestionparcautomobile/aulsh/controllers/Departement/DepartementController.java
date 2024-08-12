@@ -23,6 +23,12 @@ public class DepartementController {
         return ResponseEntity.ok(departement);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteDepartement(@PathVariable Long id) {
+        iDepartementService.deleteDepartement(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/{id}")
     public ResponseEntity<Departement> updateDepartement(@PathVariable Long id , @RequestBody DepartementRequest departementRequest) {
         Departement departement = iDepartementService.updateDepartement(id,departementRequest);

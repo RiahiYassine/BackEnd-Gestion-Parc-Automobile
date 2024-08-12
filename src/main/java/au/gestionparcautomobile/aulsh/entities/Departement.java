@@ -32,7 +32,7 @@ public class Departement {
     @Column(nullable = false)
     private String description;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "chef_id")
     private Chef chef;
 

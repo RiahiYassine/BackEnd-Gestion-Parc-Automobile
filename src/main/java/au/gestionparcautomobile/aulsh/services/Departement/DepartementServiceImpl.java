@@ -56,4 +56,9 @@ public class DepartementServiceImpl implements IDepartementService{
         return departementRepository.findAll();
     }
 
+
+    @Override
+    public void deleteDepartement(Long id){
+        departementRepository.deleteById(id);
+    }
 }

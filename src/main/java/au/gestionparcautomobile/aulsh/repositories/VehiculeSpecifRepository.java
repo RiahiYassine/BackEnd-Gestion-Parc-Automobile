@@ -14,8 +14,12 @@ import java.util.Optional;
 @Repository
 public interface VehiculeSpecifRepository extends JpaRepository<VehiculeSpecif, Long> {
 
+    long countByModeleId(Long modeleId);
+
     @Query("SELECT v.immatriculation FROM VehiculeSpecif v")
     List<String> findAllImmatriculations();
+
+    List<VehiculeSpecif> findByModeleId(Long modeleId);
 
 
     @Query("SELECT vs FROM VehiculeSpecif vs " +
@@ -29,7 +33,7 @@ public interface VehiculeSpecifRepository extends JpaRepository<VehiculeSpecif, 
             "WHERE vs.id = :id")
     Optional<VehiculeSpecif> findByIdWithEagerLoading(@Param("id") Long id);
 
-    @Query("SELECT COUNT(v) > 0 FROM VehiculeSpecif v WHERE v.modele.id = :modeleId")
+    @Query("SELECT COUNT(v) <= 1 FROM VehiculeSpecif v WHERE v.modele.id = :modeleId")
     boolean existsByModeleId(@Param("modeleId") Long modeleId);
 
 

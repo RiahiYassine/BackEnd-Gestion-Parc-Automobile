@@ -33,13 +33,13 @@ public class Mission {
     private String reference;
 
     @NotNull(message = "Responsable is required.")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "responsable_id")
     private Employe responsable;
 
 
     @NotNull(message = "Chauffeur is required.")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "chauffeur_id")
     private Employe chauffeur;
 
@@ -66,7 +66,7 @@ public class Mission {
     @JoinColumn(name="departement_id",nullable = false)
     private Departement departement;
 
-    @OneToOne(mappedBy = "mission", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "mission", fetch = FetchType.LAZY ,  orphanRemoval = true)
     private Affectation affectation;
 
     @ManyToMany(fetch = FetchType.EAGER,

@@ -23,7 +23,7 @@ import lombok.experimental.SuperBuilder;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Chef extends User{
 
-    @OneToOne(mappedBy = "chef", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "chef", fetch = FetchType.LAZY , orphanRemoval = true)
     @JsonIgnore
     private Departement departement;
 }
