@@ -2,6 +2,7 @@ package au.gestionparcautomobile.aulsh.controllers.Alerte;
 
 
 import au.gestionparcautomobile.aulsh.entities.Alerte;
+import au.gestionparcautomobile.aulsh.entities.Mission;
 import au.gestionparcautomobile.aulsh.entities.Operation;
 import au.gestionparcautomobile.aulsh.entities.Vehicule;
 import au.gestionparcautomobile.aulsh.enums.AlerteStatus;
@@ -11,6 +12,7 @@ import au.gestionparcautomobile.aulsh.records.AlerteFilter;
 import au.gestionparcautomobile.aulsh.records.DepartementRequest;
 import au.gestionparcautomobile.aulsh.records.VehiculeFilter;
 import au.gestionparcautomobile.aulsh.services.Alerte.IAlerteService;
+import au.gestionparcautomobile.aulsh.services.Mission.IMissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +27,7 @@ import java.util.List;
 public class AlerteController {
 
     private final IAlerteService iAlerteService;
-
+    private final IMissionService iMissionService;
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAlerte(@PathVariable Long id) {
@@ -67,11 +69,19 @@ public class AlerteController {
     }
 
 
+    @GetMapping("/missions/{id}")
+    public ResponseEntity<List<Mission>> getAlertesOfMissionAcceptedByDepartement(@PathVariable Long id) {
+        List<Mission> missions = iMissionService.getMissionAcceptedByDepartement(id);
+        return ResponseEntity.ok(missions);
+    }
+
     @PostMapping("/trigger-notifications")
     public ResponseEntity<Void> triggerNotifications() {
         iAlerteService.checkAndSendNotifications();
         return ResponseEntity.ok().build();
     }
+
+
 
 
     @PostMapping("/encour/filter")

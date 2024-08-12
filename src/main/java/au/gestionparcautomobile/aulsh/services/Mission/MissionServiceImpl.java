@@ -12,12 +12,13 @@ import au.gestionparcautomobile.aulsh.repositories.EmployeRepository;
 import au.gestionparcautomobile.aulsh.repositories.MissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -337,4 +338,40 @@ public class MissionServiceImpl implements IMissionService{
         return missions;
     }
 
+
+    public List<Mission> getMissionsByDateReminder() {
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
+        LocalDate dayAfter = today.plusDays(2);
+
+        // Fetch alerts for today and tomorrow with pagination
+        Pageable pageable = PageRequest.of(0, 50); // Adjust the batch size as needed
+        List<Mission> missionsForToday = missionRepository.findByDateDebut(today, pageable);
+        List<Mission> missionsForTomorrow = missionRepository.findByDateDebut(tomorrow, pageable);
+        List<Mission> missionsForDayAfter = missionRepository.findByDateDebut(dayAfter, pageable);
+
+
+        // Combine the two lists
+        missionsForToday.addAll(missionsForTomorrow);
+        missionsForToday.addAll(missionsForDayAfter);
+
+        return missionsForToday;
+    }
+
+    @Override
+    public List<Mission> getMissionAcceptedByDepartement(Long departementId){
+
+        List<Mission> missions = getMissionsByDateReminder();
+
+        List<Mission> missionsAlertes = new ArrayList<Mission>();
+
+        for(Mission mission : missions){
+            if(mission.getDepartement().getId().equals(departementId)){
+                if(mission.getAffectation().getStatus().equals(Status.ACCEPTE)){
+                    missionsAlertes.add(mission);
+                }
+            }
+        }
+        return missionsAlertes;
+    }
 }

@@ -26,6 +26,7 @@ public interface IMissionService {
     List<String> getAllResponsable();
     List<String> getAllChauffeur();
 
+    List<Mission> getMissionAcceptedByDepartement(Long id);
 
     List<Mission> getAllMissionsByDepartement(Long id);
     List<Mission> filterMissions(MissionFilter filter);

@@ -1,7 +1,9 @@
 package au.gestionparcautomobile.aulsh.repositories;
 
+import au.gestionparcautomobile.aulsh.entities.Alerte;
 import au.gestionparcautomobile.aulsh.entities.Mission;
 import au.gestionparcautomobile.aulsh.enums.Status;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,6 +28,8 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
 
     @Query("SELECT m.departement.libelle FROM Mission m")
     List<String> findAllDepartements();
+
+    List<Mission> findByDateDebut(LocalDate date, Pageable pageable);
 
 
     @Query("SELECT CONCAT(m.responsable.nom, ' ', m.responsable.prenom) FROM Mission m")
