@@ -3,11 +3,7 @@ package au.gestionparcautomobile.aulsh.services.Mission;
 import au.gestionparcautomobile.aulsh.entities.Employe;
 import au.gestionparcautomobile.aulsh.entities.Mission;
 import au.gestionparcautomobile.aulsh.entities.Vehicule;
-import au.gestionparcautomobile.aulsh.records.EmployeRequest;
-import au.gestionparcautomobile.aulsh.records.MissionFilter;
-import au.gestionparcautomobile.aulsh.records.MissionRequest;
-import au.gestionparcautomobile.aulsh.records.VehiculeFilter;
-
+import au.gestionparcautomobile.aulsh.records.*;
 import java.util.List;
 
 public interface IMissionService {
@@ -34,6 +30,12 @@ public interface IMissionService {
 
     List<Mission> getAllMissionsAccepter();
     List<Mission> getAllMissionsRefuser();
+
+    long countMission(); // This method is provided by JpaRepository
+
+    long countDemandes();
+
+    long countMissonEnCour();
 
 
 }

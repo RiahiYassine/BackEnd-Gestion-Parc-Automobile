@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alertes Notification</title>
+    <style>
+        /* styles.css */
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern font stack */
+            background-color: #f9f9f9; /* Light background color for contrast */
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .email-header {
+            background-color: #007bff; /* A vibrant header color */
+            color: #fff; /* White text for better contrast */
+            padding: 15px;
+            border-radius: 5px 5px 0 0; /* Rounded corners on top */
+            border-bottom: 2px solid #0056b3; /* Slightly darker bottom border */
+            text-align: center; /* Center-aligned text */
+        }
+
+        .email-body {
+            background-color: #fff; /* White background for the email body */
+            border-radius: 5px; /* Rounded corners for the body */
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for a modern look */
+            margin: 20px 0;
+        }
+
+        .alert {
+            background-color: #e7f0ff; /* Light blue background for alerts */
+            border: 1px solid #b3d9ff; /* Light blue border to match background */
+            padding: 15px;
+            border-radius: 5px; /* Rounded corners for alerts */
+            margin-bottom: 15px;
+        }
+
+        .alert h3 {
+            margin: 0 0 10px; /* More space below the heading */
+            color: #0056b3; /* Darker blue for the heading */
+        }
+
+        .alert p {
+            margin: 0; /* Remove default margin */
+            color: #333; /* Ensure text is readable */
+        }
+    </style>
+</head>
+<body>
+<div class="email-header">
+    <h2>Upcoming Alerts</h2>
+</div>
+<div class="email-body" th:if="${alertes != null}">
+    <div th:each="alerte, iter : ${alertes}" class="alert">
+        <h3>Alerte [[${iter.index + 1}]]</h3>
+        <p><strong>Message:</strong> [[${alerte.message}]]</p>
+        <p><strong>Vehicle ID:</strong> [[${alerte.vehicule.vehiculeSpecif.immatriculation}]]</p>
+        <p><strong>Date:</strong> [[${#temporals.format(alerte.dateReminder, 'dd/MM/yyyy')}]]</p>
+        <p><strong>Type:</strong> [[${alerte.typeAlerte.name}]]</p>
+        <p><strong>Severity:</strong> [[${alerte.severity}]]</p>
+    </div>
+</div>
+</body>
+</html>

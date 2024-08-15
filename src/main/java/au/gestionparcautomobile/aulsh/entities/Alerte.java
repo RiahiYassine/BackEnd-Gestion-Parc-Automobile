@@ -46,14 +46,14 @@ public class Alerte {
     private SeverityLevel severity;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="type_id",nullable = false)
     private TypeAlerte typeAlerte;
 
     private LocalDate createdAt;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="vehicule_id",nullable = false)
     private Vehicule vehicule;
 

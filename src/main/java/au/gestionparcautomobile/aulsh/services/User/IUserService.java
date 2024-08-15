@@ -28,4 +28,6 @@ public interface IUserService {
 
     List<Employe> filterEmployes(Long id,EmployeFilter filter);
 
+    long countEmployes();
+
 }

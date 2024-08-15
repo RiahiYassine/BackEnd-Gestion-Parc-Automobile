@@ -12,6 +12,9 @@ import au.gestionparcautomobile.aulsh.repositories.EmployeRepository;
 import au.gestionparcautomobile.aulsh.repositories.UserRepository;
 import au.gestionparcautomobile.aulsh.services.Departement.IDepartementService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +30,8 @@ public class UserServiceImpl implements IUserService{
     private final EmployeRepository employeRepository;
     private final DepartementRepository departementRepository;
     private final UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public Chef updateChef(Long id, Chef chef) {
@@ -45,17 +50,20 @@ public class UserServiceImpl implements IUserService{
         return updatedChef;
     }
 
-    public Employe createEmploye(EmployeRequest employeRequest){
+    public Employe createEmploye(EmployeRequest employeRequest) {
+        // Encode the password
+        String encodedPassword = passwordEncoder.encode(employeRequest.password());
 
         Employe employe = Employe.builder()
                 .nom(employeRequest.nom())
                 .prenom(employeRequest.prenom())
                 .email(employeRequest.email())
                 .cin(employeRequest.cin())
-                .password(employeRequest.password())
+                .password(encodedPassword)  // Use the encoded password
                 .role(employeRequest.role())
                 .grade(employeRequest.grade())
-                .departement(departementRepository.findById(employeRequest.departementId()).orElseThrow(() -> new RuntimeException("departement not found with id ")))
+                .departement(departementRepository.findById(employeRequest.departementId())
+                        .orElseThrow(() -> new RuntimeException("Department not found with id " + employeRequest.departementId())))
                 .build();
 
         return employeRepository.save(employe);
@@ -147,6 +155,14 @@ public class UserServiceImpl implements IUserService{
         }
         return filteredEmployes;
     }
+
+    @Override
+    public long countEmployes() {
+        return userRepository.count();
+    }
+
+
+
 
 
 

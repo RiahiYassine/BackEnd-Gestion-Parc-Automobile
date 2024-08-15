@@ -1,0 +1,26 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+.email-header {
+    background-color: #f4f4f4;
+    padding: 10px;
+border-bottom: 1px solid #ddd;
+}
+.email-body {
+    margin: 20px 0;
+}
+.alert {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.alert h3 {
+    margin: 0 0 5px;
+}
+.alert p {
+    margin: 5px 0;
+}

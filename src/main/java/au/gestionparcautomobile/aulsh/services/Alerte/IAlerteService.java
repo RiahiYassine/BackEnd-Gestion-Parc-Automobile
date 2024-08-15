@@ -32,4 +32,5 @@ public interface IAlerteService {
 
     List<Alerte> getAllAlerteByStatus(AlerteStatus status);
 
+    long countAlertes();
 }

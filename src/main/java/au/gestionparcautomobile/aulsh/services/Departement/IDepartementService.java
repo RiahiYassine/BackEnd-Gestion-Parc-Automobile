@@ -12,4 +12,7 @@ public interface IDepartementService {
     Departement getDepartement(Long id);
     List<Departement> getAllDepartement();
     void deleteDepartement(Long id);
+
+
+    long countDepartements();
 }

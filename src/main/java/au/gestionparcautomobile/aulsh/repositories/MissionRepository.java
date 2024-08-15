@@ -43,4 +43,14 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
 
     @Query("SELECT m FROM Mission m WHERE m.affectation.status =:status")
     List<Mission> findByStatus(@Param("status") Status status);
+
+
+    @Query("SELECT COUNT(m) FROM Mission m WHERE m.affectation.status = 'NON_TRAITE' AND m.dateDebut>=CURRENT_DATE")
+    long countMissionsWithNonTraiteStatus();
+
+    @Query("SELECT COUNT(m) FROM Mission m WHERE m.affectation.status = 'ACCEPTE' AND m.dateDebut <= CURRENT_DATE AND m.dateFin >= CURRENT_DATE")
+    long countMissonEnCour();
+
+
+    long count(); // This method is provided by JpaRepository
 }

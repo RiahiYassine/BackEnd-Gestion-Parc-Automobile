@@ -3,6 +3,7 @@ package au.gestionparcautomobile.aulsh.services.Mission;
 import au.gestionparcautomobile.aulsh.entities.*;
 import au.gestionparcautomobile.aulsh.enums.Status;
 import au.gestionparcautomobile.aulsh.exceptions.NoVehiculesFoundException;
+import au.gestionparcautomobile.aulsh.records.CardsInfo;
 import au.gestionparcautomobile.aulsh.records.MissionFilter;
 import au.gestionparcautomobile.aulsh.records.MissionRequest;
 import au.gestionparcautomobile.aulsh.records.VehiculeFilter;
@@ -338,6 +339,22 @@ public class MissionServiceImpl implements IMissionService{
         return missions;
     }
 
+    @Override
+    public long countMission() {
+        return missionRepository.count();
+    }
+
+
+    @Override
+    public long countDemandes() {
+        return missionRepository.countMissionsWithNonTraiteStatus();
+    }
+
+
+    @Override
+    public long countMissonEnCour() {
+        return missionRepository.countMissonEnCour();
+    }
 
     public List<Mission> getMissionsByDateReminder() {
         LocalDate today = LocalDate.now();
@@ -374,4 +391,7 @@ public class MissionServiceImpl implements IMissionService{
         }
         return missionsAlertes;
     }
+
+
+
 }

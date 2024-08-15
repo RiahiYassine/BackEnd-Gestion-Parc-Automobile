@@ -20,5 +20,5 @@
 
         List<Vehicule> findAvailableVehicles(LocalDate startDate, LocalDate endDate);
 
-
+        long countVehicules();
     }

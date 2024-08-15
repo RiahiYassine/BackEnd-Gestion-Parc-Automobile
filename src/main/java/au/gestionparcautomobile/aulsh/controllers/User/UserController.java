@@ -1,15 +1,15 @@
 package au.gestionparcautomobile.aulsh.controllers.User;
 
-import au.gestionparcautomobile.aulsh.entities.Chef;
 import au.gestionparcautomobile.aulsh.entities.Employe;
-import au.gestionparcautomobile.aulsh.entities.Mission;
-import au.gestionparcautomobile.aulsh.entities.User;
 import au.gestionparcautomobile.aulsh.exceptions.NoVehiculesFoundException;
+import au.gestionparcautomobile.aulsh.jwt.AuthenticationService;
+import au.gestionparcautomobile.aulsh.jwt.JwtResponse;
 import au.gestionparcautomobile.aulsh.records.*;
 import au.gestionparcautomobile.aulsh.services.User.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +20,8 @@ import java.util.List;
 public class UserController {
 
     private final IUserService iUserService;
+    private final AuthenticationService authenticationService;
+    private final AuthenticationManager authenticationManager;
 
 
     @PostMapping
@@ -53,33 +55,16 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResponse> login(@RequestBody LoginRequest loginRequest) {
-        User user = iUserService.authenticateUser(loginRequest.email(), loginRequest.password());
-        if (user != null) {
-
-            UserResponse userResponse = new UserResponse(
-                    user.getId(),
-                    user.getNom(),
-                    user.getPrenom(),
-                    user.getEmail(),
-                    user.getCin(),
-                    user.getRole(),
-                    user.getGrade()
-            );
-
-
-            if (user instanceof Chef) {
-                Chef chef = (Chef) user;
-                userResponse.setDepartement(chef.getDepartement());
-            } else if (user instanceof Employe) {
-                Employe employe = (Employe) user;
-                userResponse.setDepartement(employe.getDepartement());
-            }
-            return ResponseEntity.ok(userResponse);
-        } else {
-            return ResponseEntity.status(401).build();
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            JwtResponse jwtResponse = authenticationService.login(loginRequest.email(), loginRequest.password(), authenticationManager);
+            return ResponseEntity.ok(jwtResponse);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
+
+
 
     @GetMapping("/employes/departement/{id}")
     public ResponseEntity<List<Employe>> getAllEmployesByDepartement(@PathVariable Long id) {

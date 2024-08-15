@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import org.thymeleaf.context.Context;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -93,6 +94,7 @@ public class AlerteServiceImpl implements IAlerteService {
     @Override
     public List<Alerte> getAlertesByDateReminder() {
         LocalDate today = LocalDate.now();
+
         LocalDate tomorrow = today.plusDays(1);
 
         // Fetch alerts for today and tomorrow with pagination
@@ -130,12 +132,16 @@ public class AlerteServiceImpl implements IAlerteService {
         return new ArrayList<>(uniqueAlertsMap.values());
     }
 
+    @Override
+    public long countAlertes(){
+        return getAlertesByDateReminder().size();
+    }
 
 
 
 
     @Override
-    @Scheduled(cron = "0 53 11 * * *", zone = "Africa/Casablanca")  // Runs at 11:32 AM Casablanca time
+    @Scheduled(cron = "0 03 8 * * *", zone = "Africa/Casablanca")  // Runs at 11:53 AM Casablanca time
     public void checkAndSendNotifications() {
         List<Alerte> alertes = getAlertesByDateReminder();
 
@@ -145,22 +151,13 @@ public class AlerteServiceImpl implements IAlerteService {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        StringBuilder emailContent = new StringBuilder();
-        emailContent.append("You have the following upcoming alerts:\n\n");
-
-        int counter = 1;
-        for (Alerte alerte : alertes) {
-            emailContent.append("Alerte ").append(counter).append(":\n")
-                    .append("Message: ").append(alerte.getMessage()).append("\n")
-                    .append("Date: ").append(alerte.getDateReminder().format(formatter)).append("\n")
-                    .append("Severity: ").append(alerte.getSeverity()).append("\n")
-                    .append("Vehicle ID: ").append(alerte.getVehicule().getId()).append("\n\n");
-            counter++;
-        }
+        // Create Thymeleaf context
+        Context context = new Context();
+        context.setVariable("alertes", alertes);
 
         // Send the email asynchronously
         String subject = "Alerts Gestion Parc Automobile";
-        iEmailService.sendEmail("yassineriahi1704@gmail.com", subject, emailContent.toString());
+        iEmailService.sendEmaill("yassineriahi1704@gmail.com", subject, context);
     }
 
 
@@ -242,7 +239,7 @@ public class AlerteServiceImpl implements IAlerteService {
 
     @Override
     public List<Alerte> getAllAlerteByStatus(AlerteStatus status) {
-        List<Alerte> allAlertes = alerteRepository.findAll();
+        List<Alerte> allAlertes = getAlertesByDateReminder();
         List<Alerte> alertes = new ArrayList<>();
         for (Alerte alerte : allAlertes) {
             if (alerte.getStatus().equals(status)) {

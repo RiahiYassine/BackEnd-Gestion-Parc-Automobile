@@ -188,4 +188,9 @@ public class VehiculeServiceImpl implements IVehiculeService {
         }
     }
 
+    @Override
+    public long countVehicules() {
+        return vehiculeRepository.count();
+    }
+
 }

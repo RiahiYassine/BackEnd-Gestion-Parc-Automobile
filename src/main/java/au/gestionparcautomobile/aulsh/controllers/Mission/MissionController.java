@@ -3,10 +3,15 @@ package au.gestionparcautomobile.aulsh.controllers.Mission;
 import au.gestionparcautomobile.aulsh.entities.Mission;
 import au.gestionparcautomobile.aulsh.entities.Vehicule;
 import au.gestionparcautomobile.aulsh.exceptions.NoVehiculesFoundException;
+import au.gestionparcautomobile.aulsh.records.CardsInfo;
 import au.gestionparcautomobile.aulsh.records.MissionFilter;
 import au.gestionparcautomobile.aulsh.records.MissionRequest;
 import au.gestionparcautomobile.aulsh.records.VehiculeFilter;
+import au.gestionparcautomobile.aulsh.services.Alerte.IAlerteService;
+import au.gestionparcautomobile.aulsh.services.Departement.IDepartementService;
 import au.gestionparcautomobile.aulsh.services.Mission.IMissionService;
+import au.gestionparcautomobile.aulsh.services.User.IUserService;
+import au.gestionparcautomobile.aulsh.services.Vehicule.IVehiculeService;
 import au.gestionparcautomobile.aulsh.services.pdfGenerator.IPdfGeneratorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +30,11 @@ import java.util.Map;
 public class MissionController {
 
     private final IMissionService iMissionService;
+    private final IVehiculeService iVehiculeService;
+    private final IDepartementService iDepartementService;
+    private final IUserService iUserService;
     private final IPdfGeneratorService iPdfGeneratorService;
+    private final IAlerteService iAlerteService;
 
 
     @PostMapping
@@ -157,6 +166,10 @@ public class MissionController {
 
 
 
-
+    @GetMapping("/cards")
+    public ResponseEntity<CardsInfo> getAllCardsInfo() {
+        CardsInfo cardInfo = new CardsInfo(iVehiculeService.countVehicules(),iDepartementService.countDepartements(),iUserService.countEmployes(),iAlerteService.countAlertes(),iMissionService.countMissonEnCour(),iMissionService.countDemandes());
+        return ResponseEntity.ok(cardInfo);
+    }
 
 }
