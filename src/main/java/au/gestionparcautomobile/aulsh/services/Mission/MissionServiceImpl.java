@@ -3,10 +3,8 @@ package au.gestionparcautomobile.aulsh.services.Mission;
 import au.gestionparcautomobile.aulsh.entities.*;
 import au.gestionparcautomobile.aulsh.enums.Status;
 import au.gestionparcautomobile.aulsh.exceptions.NoVehiculesFoundException;
-import au.gestionparcautomobile.aulsh.records.CardsInfo;
 import au.gestionparcautomobile.aulsh.records.MissionFilter;
 import au.gestionparcautomobile.aulsh.records.MissionRequest;
-import au.gestionparcautomobile.aulsh.records.VehiculeFilter;
 import au.gestionparcautomobile.aulsh.repositories.AffectationRepository;
 import au.gestionparcautomobile.aulsh.repositories.DepartementRepository;
 import au.gestionparcautomobile.aulsh.repositories.EmployeRepository;
@@ -64,10 +62,10 @@ public class MissionServiceImpl implements IMissionService{
 
         Affectation affectation = Affectation.builder()
                 .mission(mission)
-                .vehicule(null) // Initially null
+                .vehicule(null)
                 .status(Status.NON_TRAITE)
-                .dateReaction(null) // Initially null
-                .motif(null) // Initially null
+                .dateReaction(null)
+                .motif(null)
                 .build();
 
         affectation = affectationRepository.save(affectation);
@@ -127,7 +125,6 @@ public class MissionServiceImpl implements IMissionService{
         Mission mission = missionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("mission not found with id " + id));
 
-        // Initialize the lazy-loaded associations
         Hibernate.initialize(mission.getResponsable());
         Hibernate.initialize(mission.getChauffeur());
         Hibernate.initialize(mission.getDepartement());
@@ -356,19 +353,30 @@ public class MissionServiceImpl implements IMissionService{
         return missionRepository.countMissonEnCour();
     }
 
+    @Override
+    public List<Mission> getAllMissionsByEmploye(Long id) {
+        List<Mission> missions = getAllMissionsAccepter();
+        List<Mission> missionEmploye = new ArrayList<>();
+
+        for (Mission mission : missions) {
+            if ( (mission.getResponsable().getId().equals(id) || mission.getChauffeur().getId().equals(id) || mission.getAccompagnants().stream().anyMatch(accompagnant -> accompagnant.getId().equals(id)))) {
+                missionEmploye.add(mission);
+            }
+        }
+        return missionEmploye;
+    }
+
     public List<Mission> getMissionsByDateReminder() {
         LocalDate today = LocalDate.now();
         LocalDate tomorrow = today.plusDays(1);
         LocalDate dayAfter = today.plusDays(2);
 
-        // Fetch alerts for today and tomorrow with pagination
         Pageable pageable = PageRequest.of(0, 50); // Adjust the batch size as needed
         List<Mission> missionsForToday = missionRepository.findByDateDebut(today, pageable);
         List<Mission> missionsForTomorrow = missionRepository.findByDateDebut(tomorrow, pageable);
         List<Mission> missionsForDayAfter = missionRepository.findByDateDebut(dayAfter, pageable);
 
 
-        // Combine the two lists
         missionsForToday.addAll(missionsForTomorrow);
         missionsForToday.addAll(missionsForDayAfter);
 

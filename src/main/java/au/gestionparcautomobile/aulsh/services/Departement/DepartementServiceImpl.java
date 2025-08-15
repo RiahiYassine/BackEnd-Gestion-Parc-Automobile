@@ -34,11 +34,10 @@ public class DepartementServiceImpl implements IDepartementService{
     public Departement updateDepartement(Long id,DepartementRequest departementRequest) {
 
         Departement existingDepartement = departementRepository.findById(id).orElseThrow(() -> new RuntimeException("departement not found with id " + id));
-
-        iUserService.updateChef(existingDepartement.getChef().getId(),departementRequest.chef());
-
+        Chef chef = iUserService.updateChef(existingDepartement.getChef().getId(),departementRequest.chef());
         existingDepartement.setLibelle(departementRequest.departement().getLibelle());
         existingDepartement.setDescription(departementRequest.departement().getDescription());
+        existingDepartement.setChef(chef);
 
         Departement updatedDepartement = departementRepository.save(existingDepartement);
 

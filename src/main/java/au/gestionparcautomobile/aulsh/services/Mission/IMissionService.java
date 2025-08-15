@@ -1,8 +1,6 @@
 package au.gestionparcautomobile.aulsh.services.Mission;
 
-import au.gestionparcautomobile.aulsh.entities.Employe;
 import au.gestionparcautomobile.aulsh.entities.Mission;
-import au.gestionparcautomobile.aulsh.entities.Vehicule;
 import au.gestionparcautomobile.aulsh.records.*;
 import java.util.List;
 
@@ -37,5 +35,6 @@ public interface IMissionService {
 
     long countMissonEnCour();
 
+    List<Mission> getAllMissionsByEmploye(Long id);
 
 }

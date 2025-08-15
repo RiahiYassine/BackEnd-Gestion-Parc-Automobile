@@ -4,7 +4,6 @@ import au.gestionparcautomobile.aulsh.entities.*;
 import au.gestionparcautomobile.aulsh.enums.AlerteStatus;
 import au.gestionparcautomobile.aulsh.exceptions.NoVehiculesFoundException;
 import au.gestionparcautomobile.aulsh.records.AlerteFilter;
-import au.gestionparcautomobile.aulsh.records.VehiculeFilter;
 import au.gestionparcautomobile.aulsh.repositories.AlerteRepository;
 import au.gestionparcautomobile.aulsh.repositories.TypeAlerteRepository;
 import au.gestionparcautomobile.aulsh.services.Email.IEmailService;
@@ -95,23 +94,20 @@ public class AlerteServiceImpl implements IAlerteService {
     public List<Alerte> getAlertesByDateReminder() {
         LocalDate today = LocalDate.now();
 
-        LocalDate tomorrow = today.plusDays(1);
+        System.out.println(today);
 
-        // Fetch alerts for today and tomorrow with pagination
+        LocalDate tomorrow = today.plusDays(2);
+
         Pageable pageable = PageRequest.of(0, 50); // Adjust the batch size as needed
         List<Alerte> alertsForToday = alerteRepository.findByDateReminder(today, pageable);
         List<Alerte> alertsForTomorrow = alerteRepository.findByDateReminder(tomorrow, pageable);
 
-        // Combine the two lists
         alertsForToday.addAll(alertsForTomorrow);
 
-        // Fetch all alerts
         List<Alerte> allAlerts = alerteRepository.findAll(); // Adjust this method according to your repository's capabilities
 
-        // Use a Map to store alerts by their ID to ensure uniqueness
         Map<Long, Alerte> uniqueAlertsMap = new LinkedHashMap<>();
 
-        // Add alerts from the allAlerts list if they meet the criteria
         for (Alerte alerte : allAlerts) {
             if (alerte.getKilometrage() != null) {
                 Long alerteKilometrage = alerte.getKilometrage();
@@ -123,12 +119,10 @@ public class AlerteServiceImpl implements IAlerteService {
             }
         }
 
-        // Add today's alerts to the map (duplicates will be overwritten)
         for (Alerte alerte : alertsForToday) {
             uniqueAlertsMap.put(alerte.getId(), alerte);
         }
 
-        // Convert the Map values back to a List
         return new ArrayList<>(uniqueAlertsMap.values());
     }
 
@@ -141,21 +135,20 @@ public class AlerteServiceImpl implements IAlerteService {
 
 
     @Override
-    @Scheduled(cron = "0 03 8 * * *", zone = "Africa/Casablanca")  // Runs at 11:53 AM Casablanca time
+    @Scheduled(cron = "0 00 9 * * *", zone = "Africa/Casablanca")  // Runs at 11:53 AM Casablanca time
     public void checkAndSendNotifications() {
+        System.out.println("hey");
         List<Alerte> alertes = getAlertesByDateReminder();
 
         if (alertes.isEmpty()) {
-            return;  // No alerts to process
+            return;
         }
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        // Create Thymeleaf context
         Context context = new Context();
         context.setVariable("alertes", alertes);
 
-        // Send the email asynchronously
         String subject = "Alerts Gestion Parc Automobile";
         iEmailService.sendEmaill("yassineriahi1704@gmail.com", subject, context);
     }

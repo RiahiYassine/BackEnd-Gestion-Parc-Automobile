@@ -29,7 +29,7 @@ public class TypeAlerte {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "typeAlerte", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "typeAlerte", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Alerte> alertes;
 }

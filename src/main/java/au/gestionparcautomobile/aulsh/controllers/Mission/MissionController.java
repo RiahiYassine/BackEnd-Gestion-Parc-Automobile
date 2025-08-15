@@ -1,12 +1,10 @@
 package au.gestionparcautomobile.aulsh.controllers.Mission;
 
 import au.gestionparcautomobile.aulsh.entities.Mission;
-import au.gestionparcautomobile.aulsh.entities.Vehicule;
 import au.gestionparcautomobile.aulsh.exceptions.NoVehiculesFoundException;
 import au.gestionparcautomobile.aulsh.records.CardsInfo;
 import au.gestionparcautomobile.aulsh.records.MissionFilter;
 import au.gestionparcautomobile.aulsh.records.MissionRequest;
-import au.gestionparcautomobile.aulsh.records.VehiculeFilter;
 import au.gestionparcautomobile.aulsh.services.Alerte.IAlerteService;
 import au.gestionparcautomobile.aulsh.services.Departement.IDepartementService;
 import au.gestionparcautomobile.aulsh.services.Mission.IMissionService;
@@ -170,6 +168,14 @@ public class MissionController {
     public ResponseEntity<CardsInfo> getAllCardsInfo() {
         CardsInfo cardInfo = new CardsInfo(iVehiculeService.countVehicules(),iDepartementService.countDepartements(),iUserService.countEmployes(),iAlerteService.countAlertes(),iMissionService.countMissonEnCour(),iMissionService.countDemandes());
         return ResponseEntity.ok(cardInfo);
+    }
+
+
+
+    @GetMapping("/employe/{id}")
+    public ResponseEntity<List<Mission>> getAllMissionsByEmploye(@PathVariable Long id) {
+        List<Mission> missions = iMissionService.getAllMissionsByEmploye(id);
+        return ResponseEntity.ok(missions);
     }
 
 }

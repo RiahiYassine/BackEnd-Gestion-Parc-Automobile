@@ -29,7 +29,7 @@ public class DepartementController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Departement> updateDepartement(@PathVariable Long id , @RequestBody DepartementRequest departementRequest) {
         Departement departement = iDepartementService.updateDepartement(id,departementRequest);
         return ResponseEntity.ok(departement);

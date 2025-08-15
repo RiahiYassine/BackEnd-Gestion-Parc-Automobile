@@ -5,21 +5,17 @@ import au.gestionparcautomobile.aulsh.enums.RoleUser;
 import au.gestionparcautomobile.aulsh.exceptions.NoVehiculesFoundException;
 import au.gestionparcautomobile.aulsh.records.EmployeFilter;
 import au.gestionparcautomobile.aulsh.records.EmployeRequest;
-import au.gestionparcautomobile.aulsh.records.MissionFilter;
 import au.gestionparcautomobile.aulsh.repositories.ChefRepository;
 import au.gestionparcautomobile.aulsh.repositories.DepartementRepository;
 import au.gestionparcautomobile.aulsh.repositories.EmployeRepository;
 import au.gestionparcautomobile.aulsh.repositories.UserRepository;
-import au.gestionparcautomobile.aulsh.services.Departement.IDepartementService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,12 +32,12 @@ public class UserServiceImpl implements IUserService{
     @Override
     public Chef updateChef(Long id, Chef chef) {
         Chef existingChef = chefRepository.findById(id).orElseThrow(() -> new RuntimeException("chef not found with id " + id));
-
+        String encodedPassword = passwordEncoder.encode(chef.getPassword());
         existingChef.setNom(chef.getNom());
         existingChef.setPrenom(chef.getPrenom());
         existingChef.setEmail(chef.getEmail());
         existingChef.setCin(chef.getCin());
-        existingChef.setPassword(chef.getPassword());
+        existingChef.setPassword(encodedPassword);
         existingChef.setRole(chef.getRole());
         existingChef.setGrade(chef.getGrade());
 
@@ -51,7 +47,6 @@ public class UserServiceImpl implements IUserService{
     }
 
     public Employe createEmploye(EmployeRequest employeRequest) {
-        // Encode the password
         String encodedPassword = passwordEncoder.encode(employeRequest.password());
 
         Employe employe = Employe.builder()

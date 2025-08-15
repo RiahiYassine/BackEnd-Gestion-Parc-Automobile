@@ -1,6 +1,5 @@
 package au.gestionparcautomobile.aulsh.repositories;
 
-import au.gestionparcautomobile.aulsh.entities.Alerte;
 import au.gestionparcautomobile.aulsh.entities.Mission;
 import au.gestionparcautomobile.aulsh.enums.Status;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +40,7 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
     @Query("SELECT m FROM Mission m WHERE m.departement.id = :departementId")
     List<Mission> findByDepartement(@Param("departementId") Long id);
 
+
     @Query("SELECT m FROM Mission m WHERE m.affectation.status =:status")
     List<Mission> findByStatus(@Param("status") Status status);
 
@@ -52,5 +52,5 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
     long countMissonEnCour();
 
 
-    long count(); // This method is provided by JpaRepository
+    long count();
 }
